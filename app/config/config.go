@@ -1,7 +1,6 @@
 package config
 
 import (
-	"base_crud/api/utils"
 	"log"
 	"os"
 	"regexp"
@@ -23,7 +22,7 @@ var Config Env
 
 func init() {
 	LoadEnv()
-	utils.Logging(Config.API_LOG)
+	Logging(Config.API_LOG)
 }
 
 func LoadEnv() {
@@ -40,8 +39,8 @@ func LoadEnv() {
 		API_PORT:          os.Getenv("API_PORT"),
 		SQLDriver:         os.Getenv("SQL_DRIVER"),
 		DATABASE:          os.Getenv("MYSQL_DATABASE"),
-		DATABASE_USER:     os.Getenv("MYSQL_DATABASE_USER"),
-		DATABASE_PASSWORD: os.Getenv("MYSQL_DATABASE_PASSWORD"),
+		DATABASE_USER:     os.Getenv("MYSQL_USER"),
+		DATABASE_PASSWORD: os.Getenv("MYSQL_PASSWORD"),
 		DATABASE_PORT:     os.Getenv("MYSQL_PORT"),
 		API_LOG:           os.Getenv("API_LOG_FILE"),
 	}

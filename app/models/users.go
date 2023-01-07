@@ -1,0 +1,53 @@
+package models
+
+import (
+	"base_crud/app/config"
+	"base_crud/app/utils"
+	"log"
+)
+
+type User struct {
+	UserId       int
+	UserName     string
+	Password     string
+	Email        string
+	DepartmentId int
+}
+
+func (u *User) CreateUser() (err error) {
+	config.ConnectionDatabase()
+	defer config.CloseDatabase()
+	cmd := `insert into users (
+		user_name,
+		password,
+		email,
+		department_id
+		) values (?, ?, ?)`
+	_, err = config.DB.Exec(cmd, u.UserName, utils.Encrypt(u.Password), u.DepartmentId)
+
+	if err != nil {
+		log.Fatalln(err)
+	}
+	return err
+}
+
+func GetUser(userId int) (user User, err error) {
+	config.ConnectionDatabase()
+	defer config.CloseDatabase()
+	user = User{}
+	cmd := `select
+				user_id,
+				user_name,
+				email,
+				department_id 
+			from 
+				users 
+			where user_id = ?`
+	err = config.DB.QueryRow(cmd, userId).Scan(
+		&user.UserId,
+		&user.UserName,
+		&user.Email,
+		&user.DepartmentId,
+	)
+	return
+}

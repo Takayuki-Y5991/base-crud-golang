@@ -1,12 +1,11 @@
 package main
 
 import (
-	"base_crud/api/config"
+	"base_crud/app/models"
 	"fmt"
-	"log"
 )
 
 func main() {
-	fmt.Println(config.Config.API_PORT)
-	log.Print("A")
+	u, _ := models.GetUser(1)
+	fmt.Println(u)
 }
