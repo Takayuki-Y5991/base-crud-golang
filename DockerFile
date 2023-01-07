@@ -1,0 +1,23 @@
+################# Build Stage #################
+FROM golang:1.19-alpine3.17 as builder
+WORKDIR /app
+COPY go.mod go.sum ./
+# Library install
+RUN go mod download
+COPY . .
+RUN go build -o main /app/main.go
+
+################# Run Stage #################
+# Golangのイメージを利用するより軽量であるため、alpineLinuxを選択
+FROM alpine3.17
+
+WORKDIR /app
+COPY --from=builder /app/main .
+
+COPY .env .
+COPY wait-for.sh .
+
+RUN chmod +x wait-for.sh
+
+EXPOSE 8000
+CMD ["/app/main"]

@@ -1,0 +1,37 @@
+version: '3'
+
+services:
+  golang-base-crud-api:
+    container_name: golang-base-crud-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+    depends_on:
+      - golang-mariadb
+    # Wait-forについて https://docs.docker.jp/compose/startup-order.html
+    entrypoint: ["/app/wait-for.sh", "golang-mariadb:3306", "--"]
+    command: ["/app/main"]
+  golang-mariadb:
+    container_name: golang-mariadb
+    image: mariadb:latest
+    restart: always
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mariadb/initdb.d:/docker-entrypoint-initdb.d
+      - ./mariadb/db:/var/lib/mysql
+    env_file:
+      - .env
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD} 
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - TZ=Asia/Tokyo
+    networks:
+      - golang-base-crud-app
+networks:
+  golang-base-crud-app:
+    driver: bridge
