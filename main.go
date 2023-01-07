@@ -6,6 +6,6 @@ import (
 )
 
 func main() {
-	u, _ := models.GetUser(1)
+	u, _ := models.GetUsers()
 	fmt.Println(u)
 }
